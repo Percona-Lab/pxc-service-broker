@@ -42,7 +42,26 @@ func (psb *PXCServiceBroker) Services(ctx context.Context) ([]brokerapi.Service,
 		planList = append(planList, *plan)
 	}
 
-	return []brokerapi.Service{ /*
+	return []brokerapi.Service{
+		brokerapi.Service{
+			ID:          "pxc-service-broker-id",
+			Name:        "percona-xtradb-cluster",
+			Description: "database",
+			Bindable:    true,
+			Plans:       planList,
+			Metadata: &brokerapi.ServiceMetadata{
+				DisplayName:         "PXC",
+				LongDescription:     "PerconaXtraBDCluster",
+				DocumentationUrl:    "",
+				SupportUrl:          "",
+				ImageUrl:            "",
+				ProviderDisplayName: "percona",
+			},
+			Tags: []string{
+				"pxc",
+			},
+		},
+		/*
 			brokerapi.Service{
 				ID:          psb.Config.RedisConfiguration.ServiceID,
 				Name:        psb.Config.RedisConfiguration.ServiceName,
