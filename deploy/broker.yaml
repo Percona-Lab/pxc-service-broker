@@ -1,0 +1,59 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: percona-xtradb-cluster-operator
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: pxc-service-broker
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: pxc-service-broker
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+  - kind: ServiceAccount
+    name: pxc-service-broker
+    namespace: myproject
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: percona-xtradb-cluster-operator
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+  - kind: ServiceAccount
+    name: percona-xtradb-cluster-operator
+    namespace: myproject
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pxc-service-broker
+  labels:
+    app: pxc-service-broker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pxc-service-broker
+  template:
+    metadata:
+      labels:
+        app: pxc-service-broker
+    spec:
+      serviceAccountName: pxc-service-broker
+      containers:
+        - name: pxc-service-broker
+          image: perconalab/percona-xtradb-cluster-operator:pxc-service-broker
+          ports:
+          - containerPort: 8081
+          imagePullPolicy: Always

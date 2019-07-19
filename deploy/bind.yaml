@@ -1,0 +1,6 @@
+apiVersion: servicecatalog.k8s.io/v1beta1
+kind: ClusterServiceBroker
+metadata:
+  name: PXC
+spec:
+  url: 172.30.103.14:8081
